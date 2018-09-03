@@ -136,6 +136,12 @@ public class SongsListDisplay extends Fragment {
         PSS = new PlaySongService();
 
         PlayPauseButtton = View_SongsList.findViewById(R.id.Button_PlayPause);
+        if (MainSongApp.PlayingMusic) {
+            PlayPauseButtton.setImageResource(R.drawable.pause);
+        }
+        else {
+            PlayPauseButtton.setImageResource(R.drawable.play);
+        }
         PlayPauseButtton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

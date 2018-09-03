@@ -41,6 +41,7 @@ public class PlaySongService extends Service {
     @Override
     public void onDestroy() {
         super.onDestroy();
+        MainSongApp.PlayingMusic = false;
         MusicPlayer.stop();
         MusicPlayer.reset();
     }
@@ -48,12 +49,14 @@ public class PlaySongService extends Service {
     public void PlayMusic (String Song) {
         Log.i("DEF", "6");
         if (MusicPlayer.isPlaying()) {
+            MainSongApp.PlayingMusic = false;
             Log.i("DEF", "7");
             MusicPlayer.stop();
             MusicPlayer.reset();
         }
         Log.i("DEF", "8");
         try {
+            MainSongApp.PlayingMusic = true;
             Log.i("DEF", "9");
             MusicPlayer.setDataSource(Song);
             Log.i("DEF", "10");

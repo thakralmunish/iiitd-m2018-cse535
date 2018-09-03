@@ -2,10 +2,12 @@ package com.example.thakr.finalapp2;
 
 import android.Manifest;
 import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.pm.PackageManager;
 import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
@@ -16,6 +18,8 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
 import static android.content.Intent.ACTION_AIRPLANE_MODE_CHANGED;
@@ -28,6 +32,10 @@ public class MainSongApp extends FragmentActivity {
     Fragment BF, CS, CSandD, HD, SLD;
 
     BroadcastReceiver BR;
+
+    Button TestDownloadButton;
+
+    static boolean PlayingMusic = false;
 
     private int My_Permission_Request = 1;
 
@@ -44,23 +52,20 @@ public class MainSongApp extends FragmentActivity {
                     getSupportFragmentManager().beginTransaction().remove(CSandD).commit();
                     getSupportFragmentManager().beginTransaction().remove(SLD).commit();
 
-                    getSupportFragmentManager().beginTransaction().replace(R.id.Frame_Main, HD).commit();
+                    getSupportFragmentManager().beginTransaction().replace(R.id.Frame_SongsList, HD).commit();
                     return true;
 
                 case R.id.navigation_viewsongs:
                     Log.i("ABC", "5");
                     getSupportFragmentManager().beginTransaction().remove(HD).commit();
-                    Log.i("ABC", "6");
-                    if (PermissionGrant) {
-                        Log.i("ABC", "7");
+                    if (TestDownloadButton.getText().equals("Download")) {
                         getSupportFragmentManager().beginTransaction().replace(R.id.Frame_SongsList, SLD, "SONGSLISTTAG").commit();
-                        Log.i("ABC", "8");
                     }
                     else {
-                        Log.i("ABC", "9");
-                        getSupportFragmentManager().beginTransaction().replace(R.id.Frame_SongsList, BF).commit();
-                        Log.i("ABC", "10");
+                        TestDownloadButton.setText("Download");
+                        getSupportFragmentManager().beginTransaction().replace(R.id.Frame_SongsList, SLD).commit();
                     }
+                    Log.i("ABC", "6");
                     Log.i("ABC", "11");
                     Log.i("ABC", "12");
                     return true;
@@ -103,7 +108,7 @@ public class MainSongApp extends FragmentActivity {
 
         Log.i("ABC", "16");
 
-        getSupportFragmentManager().beginTransaction().add(R.id.Frame_Main, HD).commit();
+        getSupportFragmentManager().beginTransaction().add(R.id.Frame_SongsList, HD).commit();
 
         Log.i("ABC", "17");
 
@@ -123,6 +128,39 @@ public class MainSongApp extends FragmentActivity {
         }
 
         navigation.setOnNavigationItemSelectedListener(mOnNavigationItemSelectedListener);
+
+        TestDownloadButton = findViewById(R.id.TestDownload);
+
+        TestDownloadButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (TestDownloadButton.getText().equals("Download")) {
+                    TestDownloadButton.setText("View Songs List");
+                    getSupportFragmentManager().beginTransaction().replace(R.id.Frame_SongsList, BF).commit();
+                    ConnectivityManager CM = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+                    NetworkInfo ActiveNetwork = CM.getActiveNetworkInfo();
+                    boolean IsConnected = (ActiveNetwork != null) && (ActiveNetwork.isConnected());
+                    if (IsConnected) {
+                        Toast.makeText(getApplicationContext(), "Connected", Toast.LENGTH_SHORT).show();
+                        DownloadTheSong(v);
+                    }
+                    else {
+                        Toast.makeText(getApplicationContext(), "Not Connected", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else {
+                    TestDownloadButton.setText("Download");
+                    getSupportFragmentManager().beginTransaction().replace(R.id.Frame_SongsList, SLD).commit();
+                }
+            }
+        });
+
+    }
+
+    public void DownloadTheSong(View V) {
+        Intent DownloadIntent = new Intent(this, DownloaderService.class);
+        startService(DownloadIntent);
+        stopService(DownloadIntent);
     }
 
     public boolean PermissionGranted(int requestCode, String[] permissions, int[] grantResults){
@@ -156,6 +194,11 @@ public class MainSongApp extends FragmentActivity {
             Toast.makeText(this, "No Permission Granted", Toast.LENGTH_SHORT).show();
             finish();
         }
+    }
+
+
+    public void DownloadFromTheNet(View V) {
+
     }
 
     @Override
