@@ -29,10 +29,14 @@ public class SongsListDisplay extends Fragment {
 
     View View_SongsList;
 
+    int CurrentSong = -1;
+
     TextView TestView;
 
     Button DownloadButton;
     ImageView PlayPauseButtton;
+    ImageView NextButton;
+    ImageView PreviousButton;
 
     String SongName;
     String ArtistName;
@@ -102,6 +106,7 @@ public class SongsListDisplay extends Fragment {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                CurrentSong = position;
                 ThisSong = SongLocations.get(position);
                 SongName = SongsArray.get(position);
                 ArtistName = SongArtistArray.get(position);
@@ -135,6 +140,48 @@ public class SongsListDisplay extends Fragment {
 
         PSS = new PlaySongService();
 
+        PreviousButton = View_SongsList.findViewById(R.id.Button_Prev);
+        PreviousButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (CurrentSong == -1) {
+                    CurrentSong = 0;
+                }
+                else if (CurrentSong == 0) {
+                    CurrentSong = SongsArray.size() - 1;
+                }
+                else {
+                    CurrentSong -= 1;
+                }
+
+                ThisSong = SongLocations.get(CurrentSong);
+                SongName = SongsArray.get(CurrentSong);
+                ArtistName = SongArtistArray.get(CurrentSong);
+                CurrentStatus = "Play";
+                PlayPauseButtton.performClick();
+            }
+        });
+
+        NextButton = View_SongsList.findViewById(R.id.Button_Next);
+        NextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (CurrentSong == -1) {
+                    CurrentSong = 0;
+                }
+                else if (CurrentSong == SongsArray.size() - 1) {
+                    CurrentSong = 0;
+                }
+                else {
+                    CurrentSong += 1;
+                }
+                ThisSong = SongLocations.get(CurrentSong);
+                SongName = SongsArray.get(CurrentSong);
+                ArtistName = SongArtistArray.get(CurrentSong);
+                CurrentStatus = "Play";
+                PlayPauseButtton.performClick();
+            }
+        });
         PlayPauseButtton = View_SongsList.findViewById(R.id.Button_PlayPause);
         if (MainSongApp.PlayingMusic) {
             PlayPauseButtton.setImageResource(R.drawable.pause);
@@ -153,6 +200,7 @@ public class SongsListDisplay extends Fragment {
                         ThisSong = SongLocations.get(0);
                         SongName = SongsArray.get(0);
                         ArtistName = SongArtistArray.get(0);
+                        CurrentSong = 0;
                     }
                     PlayIntent.putExtra(PlaySongService.ThisSong, ThisSong);
                     getActivity().startService(PlayIntent);
