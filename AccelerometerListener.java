@@ -42,13 +42,16 @@ public class AccelerometerListener implements SensorEventListener {
         }
         else {
             float Speed = (x - PrevX) + (y - PrevY) + (z - PrevZ);
-            if (Math.abs(Speed) > 25) {
+            if (Math.abs(Speed) > 27) {
                 Shake += 1;
-                if (Shake >= 2) {
+                if (Shake >= 3) {
                     Log.d("ABCDEF", "SHAKE");
                     MainActivity.MakeSnackBar();
                     Shake = 0;
                 }
+            }
+            else {
+                Shake = 0;
             }
             Log.d("ABC", "26");
             Log.d("ABCDEF", String.valueOf(Speed));

@@ -25,7 +25,7 @@ import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity {
 
-    public static int SamplingPeriod = 1000000;
+    public static int SamplingPeriod = 100000;
 
     public static TextView AccelerometerX, AccelerometerY, AccelerometerZ;
     public static TextView GyroscopeX, GyroscopeY, GyroscopeZ;

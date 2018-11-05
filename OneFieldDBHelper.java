@@ -9,7 +9,7 @@ import android.util.Log;
 
 public class OneFieldDBHelper extends SQLiteOpenHelper{
 
-    public static String DB_NAME = "SENSOR_VALUES";
+    //public static String DB_NAME = "SENSOR_VALUES";
     public static int DB_VERSION = 1;
     public String TABLE_NAME;
 
@@ -18,7 +18,7 @@ public class OneFieldDBHelper extends SQLiteOpenHelper{
     public String TABLE_DROP = "";
 
     public OneFieldDBHelper(Context context, String TableName) {
-        super(context, DB_NAME, null, DB_VERSION);
+        super(context, TableName, null, DB_VERSION);
         TABLE_NAME = TableName;
         TABLE_CREATE = "CREATE TABLE " + TABLE_NAME + "(" +
                 OneFieldContract.TableEntry.TIMESTAMP + " TEXT PRIMARY KEY," +
